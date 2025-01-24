@@ -1,0 +1,502 @@
+{
+	"info": {
+		"_postman_id": "6b20b2cb-7772-4754-9b97-209d954f2159",
+		"name": "StudentAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8593518"
+	},
+	"item": [
+		{
+			"name": "TC 0001 - Verify adding new student",
+			"item": [
+				{
+					"name": "{{baseurl}}api/studentsDetails",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Verification of response body\r",
+									"pm.test(\"Verification of response body\",function()\r",
+									"{\r",
+									"var student_jsondata = pm.response.json();\r",
+									"console.log( student_jsondata);\r",
+									"var expected_studentid = student_jsondata.id;\r",
+									"\r",
+									"//set environment variable student id \r",
+									"pm.environment.set(\"StudentID\",student_jsondata.id);\r",
+									"var expected_date_of_birth = pm.iterationData.get(\"data_date_of_birth\");\r",
+									"console.log(\"data value for dateof birth\"+pm.iterationData.get(\"data_date_of_birth\"));\r",
+									"\r",
+									"\r",
+									"console.log(\"expected_studentid :\" + expected_studentid);\r",
+									"var expected_json = {\r",
+									"    \"id\": expected_studentid,\r",
+									"    \"first_name\": \"Regression\",\r",
+									"    \"middle_name\": \"Test\",\r",
+									"    \"last_name\": \"User\",\r",
+									"    \"date_of_birth\": expected_date_of_birth\r",
+									"}\r",
+									"console.log(expected_json);\r",
+									"for(const key in expected_json)\r",
+									"{\r",
+									"   pm.expect(student_jsondata).to.have.property(key,expected_json[key]);\r",
+									"\r",
+									"}\r",
+									"console.log(\"POST api/studentsDetails verification of Json response is passed \")\r",
+									"})\r",
+									"\r",
+									"\r",
+									"///verification of status and status code \r",
+									"pm.test(\"verification of status and status code\",function()\r",
+									"{\r",
+									"  if(pm.response.status= 201)\r",
+									"{\r",
+									"    console.log(\"POST api/studentsDetails verification of response status is passed\")\r",
+									"}\r",
+									"\r",
+									"else\r",
+									"{\r",
+									"    console.log(\"POST api/studentsDetails verification of response status is failed\")\r",
+									"}\r",
+									"}\r",
+									")"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n//\"id\":{{StudentID}},\r\n//\"id\":10508948,\r\n\"first_name\": \"Regression\",\r\n\"middle_name\": \"Test\",\r\n\"last_name\": \"User\",\r\n\"date_of_birth\": \"{{data_date_of_birth}}\"\r\n//\"date_of_birth\": \"2000.12.12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}api/studentsDetails",
+							"host": [
+								"{{baseurl}}api"
+							],
+							"path": [
+								"studentsDetails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{baseurl}}api/studentsDetails/{{StudentID}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//verification of status code and status\r",
+									"pm.test(\"verification of status code and status\",function()\r",
+									"{\r",
+									" if(pm.expect(pm.response.status).to.equal(\"OK\") && pm.expect(pm.response.code).to.equal(200)){\r",
+									"    console.log(\"GET api/studentsDetails/<<studentid>> verification of  response status and code is passed \");\r",
+									"}\r",
+									"else\r",
+									"{\r",
+									"    console.log(\"GET api/studentsDetails/<<studentid>> verification of  response status and code is failed\");\r",
+									"} \r",
+									"}\r",
+									")\r",
+									"\r",
+									"//verification of response body \r",
+									"pm.test(\"verification of response body\",function()\r",
+									"{\r",
+									"   var expected_studentid = pm.environment.get(\"StudentID\");\r",
+									"var expected_date_of_birth = pm.iterationData.get(\"data_date_of_birth\");\r",
+									"\r",
+									"var expected_response = {\r",
+									"    \"status\": \"true\",\r",
+									"    \"data\": {\r",
+									"        \"id\": expected_studentid,\r",
+									"        \"first_name\": \"Regression\",\r",
+									"        \"middle_name\": \"Test\",\r",
+									"        \"last_name\": \"User\",\r",
+									"        \"date_of_birth\": expected_date_of_birth\r",
+									"    }\r",
+									"}\r",
+									"var actual_response = pm.response.json();\r",
+									"for (let key in expected_response) {\r",
+									"    console.log(\"the key  is : \" + key + \"  the value is: \" + actual_response[key]);\r",
+									"\r",
+									"    if (typeof expected_response[key] == \"object\") {\r",
+									"        for (let nestedkey in expected_response[key]) {\r",
+									"            console.log(\"the key  is : \" + nestedkey + \"  the value is: \" + actual_response[key][nestedkey]);\r",
+									"            pm.expect(actual_response[key][nestedkey]).to.equal(expected_response[key][nestedkey]);\r",
+									"            pm.expect(actual_response[key]).to.have.property(nestedkey);\r",
+									"            console.log(\"Getapi/studentsDetails/<<StudentID>> response nested object validation is passed\")\r",
+									"             \r",
+									"        }\r",
+									"    }\r",
+									"    else\r",
+									"    {\r",
+									"    pm.expect(actual_response).to.have.property(key);\r",
+									"    pm.expect(actual_response[key]).to.equal(expected_response[key]);\r",
+									"    console.log(\"Getapi/studentsDetails/<<StudentID>> response parent object validation is passed\")\r",
+									"    } \r",
+									"   \r",
+									"}\r",
+									"})\r",
+									"\r",
+									"    \r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}api/studentsDetails/{{StudentID}}",
+							"host": [
+								"{{baseurl}}api"
+							],
+							"path": [
+								"studentsDetails",
+								"{{StudentID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TC0002-Verify updating student",
+			"item": [
+				{
+					"name": "{{baseurl}}api/studentsDetails/{{StudentID}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"//verification of response body\r",
+									"pm.test(\"verification of response body\" ,function()\r",
+									"{\r",
+									"var jsonresponse = pm.response.json();\r",
+									"console.log(jsonresponse);\r",
+									"pm.expect(jsonresponse.status).to.equal(\"true\");\r",
+									"pm.expect(jsonresponse.msg).to.equal(\"update  data success\");\r",
+									"console.log(\"PUT api/studentsDetails/id response verification is passed\");\r",
+									"}\r",
+									")\r",
+									"\r",
+									"//verification of status and code\r",
+									"pm.test(\"verification of status and code\" ,function()\r",
+									"{\r",
+									"if(pm.expect(pm.response.status).to.equal(\"OK\") && pm.expect(pm.response.code).to.equal(200))\r",
+									"{\r",
+									"    console.log(\"PUT api/studentsDetails/id response status and code verification is passed\");\r",
+									"}\r",
+									"else\r",
+									"{\r",
+									"    console.log(\"PUT api/studentsDetails/id response status and code verification is failed\");\r",
+									"}\r",
+									"})\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\" : \"{{StudentID}}\",\r\n    \"first_name\": \"Regression\",\r\n    \"middle_name\": \"Test\",\r\n    \"last_name\": \"User\",\r\n    \"date_of_birth\": \"{{data_date_of_birth_updated}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}api/studentsDetails/{{StudentID}}",
+							"host": [
+								"{{baseurl}}api"
+							],
+							"path": [
+								"studentsDetails",
+								"{{StudentID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TC0003- Verify student list",
+			"item": [
+				{
+					"name": "{{baseurl}}api/studentsDetails",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//verification of response body\r",
+									"pm.test(\"verification of response body\",function()\r",
+									"{\r",
+									"var studentarray = pm.response.json();\r",
+									"var expected_studentid = pm.environment.get(\"StudentID\");\r",
+									"console.log(expected_studentid);\r",
+									"var expected_json = {\r",
+									"    \"id\": expected_studentid,\r",
+									"    \"first_name\": \"Regression\",\r",
+									"    \"middle_name\": \"test\",\r",
+									"    \"last_name\": \"user\",\r",
+									"    \"date_of_birth\": \"1986.03.10\"\r",
+									"}\r",
+									"\r",
+									"if(studentarray && studentarray.length > 0)\r",
+									"{\r",
+									"var index = studentarray.length-1;\r",
+									"console.log(studentarray.length);\r",
+									"var laststudent = studentarray[index];\r",
+									"console.log(laststudent);\r",
+									"for(var key in expected_json)\r",
+									"  {\r",
+									"     pm.expect(laststudent).to.have.property(key); \r",
+									"    // pm.expect(laststudent[key]).to.equal(expected_json[key]);\r",
+									"  }\r",
+									"}\r",
+									"else\r",
+									"{\r",
+									"   console.log(\"No students found in the list\");\r",
+									"}\r",
+									"}\r",
+									")\r",
+									"\r",
+									"//verification of status code and status\r",
+									"pm.test(\"verification of status code and status\",function()\r",
+									"{\r",
+									" var response_status = pm.response.status; \r",
+									"var response_statuscode = pm.response.code; \r",
+									"\r",
+									"if(response_status === \"OK\" && response_statuscode === 200)\r",
+									"{\r",
+									" console.log(\"Get api/studentsDetails request is passed\");\r",
+									"}\r",
+									"else\r",
+									"{\r",
+									"    console.log(\"GET api/studentsDetails request is failed\")\r",
+									"}\r",
+									"\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}api/studentsDetails",
+							"host": [
+								"{{baseurl}}api"
+							],
+							"path": [
+								"studentsDetails"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TC0004-Verify student  delete",
+			"item": [
+				{
+					"name": "{{baseurl}}api/studentsDetails/{{StudentID}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Verification - delete user, response status and code \r",
+									"pm.test(\"Verification - delete user, response status and code\",function()\r",
+									"{\r",
+									" if(pm.response.code == 200 && pm.response.status == \"OK\")\r",
+									"{\r",
+									"    console.log(\"DELETE api/studentsDetails<<Studentid>> response status and code verification  is passed\");\r",
+									"}\r",
+									"else{\r",
+									"    console.log(\"DELETE api/studentsDetails<<Studentid>> response status and code verification  is failed\");\r",
+									"}\r",
+									"}\r",
+									")\r",
+									"\r",
+									"//verification - delete user, response msg\r",
+									"pm.test(\"verification - delete user, response msg\",function()\r",
+									"{\r",
+									"  var jsonresponse = pm.response.json();\r",
+									"pm.expect(jsonresponse).to.have.property(\"status\");\r",
+									"pm.expect(jsonresponse).to.have.property(\"msg\");\r",
+									"pm.expect(jsonresponse.status).to.equal(\"true\");\r",
+									"pm.expect(jsonresponse.msg).to.equal(\"Delete  data success\");\r",
+									"console.log(\"DELETE api/studentsDetails<<Studentid>> response body verification  is passed\");\r",
+									"\r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}api/studentsDetails/{{StudentID}}",
+							"host": [
+								"{{baseurl}}api"
+							],
+							"path": [
+								"studentsDetails",
+								"{{StudentID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Negative test cases",
+			"item": [
+				{
+					"name": "TC0005-Verify student does not exsists",
+					"item": [
+						{
+							"name": "{{baseurl}}api/studentsDetails/{{StudentID}}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Verify non exsistance user response \",function()\r",
+											"{\r",
+											"if(pm.response.status == \"OK\" && pm.response.code == 200)\r",
+											"{\r",
+											"    console.log(\"GET api/studentsDetails<<Studentid>> for non exsistant student response status and code verification  is passed\");\r",
+											"}\r",
+											"else\r",
+											"{\r",
+											"     console.log(\"GET api/studentsDetails<<Studentid>> for non exsistant student response status and code verification  is failed\");\r",
+											"}\r",
+											"\r",
+											"var jsonresponse = pm.response.json()\r",
+											"pm.expect(jsonresponse).to.have.property(\"status\");\r",
+											"pm.expect(jsonresponse).to.have.property(\"msg\");\r",
+											"pm.expect(jsonresponse.status).to.equal(\"false\");\r",
+											"pm.expect(jsonresponse.msg).to.equal(\"No data Found\");\r",
+											"\r",
+											"\r",
+											"console.log(\"GET api/studentsDetails<<Studentid>> for non exsistant student response body verification  is passed\");\r",
+											"\r",
+											"})\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseurl}}api/studentsDetails/{{StudentID}}",
+									"host": [
+										"{{baseurl}}api"
+									],
+									"path": [
+										"studentsDetails",
+										"{{StudentID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"value": "https://thetestingworldapi.com/",
+			"type": "default"
+		}
+	]
+}
